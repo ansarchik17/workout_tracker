@@ -25,3 +25,14 @@ func (repository *AuthRepository) Create(ctx context.Context, user models.User) 
 	}
 	return id, err
 }
+
+func (repository *AuthRepository) FindByEmail(ctx context.Context, email string) (models.User, error) {
+	row := repository.db.QueryRow(ctx, "select id, name, email, password_hash where email = $1", email)
+
+	var user models.User
+	err := row.Scan(&user.ID, user.Name, user.Email, user.PasswordHash)
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, err
+}
