@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"workout-tracker/config"
+	"workout-tracker/handlers"
+	"workout-tracker/repositories"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -26,6 +28,10 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	workOutRepository := repositories.NewAuthRepositories(connection)
+	workOutHandler := handlers.NewAuthHandler(workOutRepository)
+	r.POST("/workout/signUp", workOutHandler.SignUp)
+	r.Run(config.Config.AppHost)
 }
 
 func connectToDb() (*pgxpool.Pool, error) {
