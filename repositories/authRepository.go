@@ -11,28 +11,41 @@ type AuthRepository struct {
 	db *pgxpool.Pool
 }
 
-func NewAuthRepositories(conn *pgxpool.Pool) *AuthRepository {
+func NewAuthRepository(conn *pgxpool.Pool) *AuthRepository {
 	return &AuthRepository{db: conn}
 }
 
-func (repository *AuthRepository) Create(ctx context.Context, user models.User) (int, error) {
+func (r *AuthRepository) Create(ctx context.Context, user models.User) (int, error) {
 	var id int
+	err := r.db.QueryRow(ctx,
+		`insert into users (name, email, password_hash)
+		 values ($1, $2, $3)
+		 returning user_id`,
+		user.Name,
+		user.Email,
+		user.PasswordHash,
+	).Scan(&id)
 
-	err := repository.db.QueryRow(ctx, "insert into users(name, email, password_hash) values ($1, $2, $3) returning id", user.Name, user.Email, user.PasswordHash).Scan(&id)
-
-	if err != nil {
-		return 0, err
-	}
 	return id, err
 }
 
-func (repository *AuthRepository) FindByEmail(ctx context.Context, email string) (models.User, error) {
-	row := repository.db.QueryRow(ctx, "select id, name, email, password_hash where email = $1", email)
-
+func (r *AuthRepository) FindByEmail(ctx context.Context, email string) (models.User, error) {
 	var user models.User
-	err := row.Scan(&user.ID, user.Name, user.Email, user.PasswordHash)
+	err := r.db.QueryRow(ctx,
+		`select user_id, name, email, password_hash
+		 from users
+		 where email = $1`,
+		email,
+	).Scan(
+		&user.UserID,
+		&user.Name,
+		&user.Email,
+		&user.PasswordHash,
+	)
+
 	if err != nil {
 		return models.User{}, err
 	}
-	return user, err
+
+	return user, nil
 }
