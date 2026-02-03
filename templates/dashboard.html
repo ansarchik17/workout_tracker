@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Workout Tracker</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-page">
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="logo-small">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="35" width="15" height="50" rx="3" fill="currentColor"/>
+                        <rect x="65" y="35" width="15" height="50" rx="3" fill="currentColor"/>
+                        <rect x="35" y="45" width="30" height="8" rx="2" fill="currentColor"/>
+                    </svg>
+                </div>
+                <span class="brand-text">WORKOUT TRACKER</span>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="btn btn-secondary btn-small" id="logoutBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="dashboard-sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Quick Actions</h3>
+                <button class="sidebar-btn active" data-view="workouts">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                    <span>My Workouts</span>
+                </button>
+                <button class="sidebar-btn" data-view="exercises">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span>Exercises</span>
+                </button>
+                <button class="sidebar-btn" data-view="create-workout">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    <span>Create Workout</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="dashboard-main">
+            <!-- Workouts View -->
+            <div class="view-container" id="workoutsView">
+                <div class="view-header">
+                    <div>
+                        <h1 class="view-title">My Workouts</h1>
+                        <p class="view-subtitle">Track and manage your training sessions</p>
+                    </div>
+                    <button class="btn btn-primary" id="createWorkoutBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        <span>New Workout</span>
+                    </button>
+                </div>
+                
+                <div class="workouts-grid" id="workoutsGrid">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                        </svg>
+                        <h3>No workouts yet</h3>
+                        <p>Create your first workout to get started</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercises View -->
+            <div class="view-container hidden" id="exercisesView">
+                <div class="view-header">
+                    <div>
+                        <h1 class="view-title">Exercise Library</h1>
+                        <p class="view-subtitle">Browse and manage your exercises</p>
+                    </div>
+                    <button class="btn btn-primary" id="createExerciseBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        <span>New Exercise</span>
+                    </button>
+                </div>
+                
+                <div class="exercises-grid" id="exercisesGrid">
+                    <div class="loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading exercises...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Workout View -->
+            <div class="view-container hidden" id="createWorkoutView">
+                <div class="view-header">
+                    <div>
+                        <h1 class="view-title">Create Workout</h1>
+                        <p class="view-subtitle">Plan your next training session</p>
+                    </div>
+                </div>
+                
+                <div class="form-card">
+                    <form id="workoutForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="workoutTitle">Workout Title</label>
+                                <input type="text" id="workoutTitle" name="title" required placeholder="e.g., Upper Body Push Day">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="workoutScheduledAt">Scheduled Date & Time</label>
+                                <input type="datetime-local" id="workoutScheduledAt" name="scheduled_at" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="workoutDescription">Description</label>
+                            <textarea id="workoutDescription" name="description" required placeholder="Describe your workout goals and focus areas"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="workoutComment">Notes</label>
+                            <textarea id="workoutComment" name="comment" required placeholder="Any additional notes or reminders"></textarea>
+                        </div>
+                        
+                        <div class="exercises-section">
+                            <div class="section-header">
+                                <h3>Exercises</h3>
+                                <button type="button" class="btn btn-secondary btn-small" id="addExerciseBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="5" x2="12" y2="19"/>
+                                        <line x1="5" y1="12" x2="19" y2="12"/>
+                                    </svg>
+                                    <span>Add Exercise</span>
+                                </button>
+                            </div>
+                            
+                            <div id="exercisesList">
+                                <!-- Exercise items will be added here -->
+                            </div>
+                        </div>
+                        
+                        <div id="workoutFormError" class="error-message"></div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancelWorkoutBtn">Cancel</button>
+                            <button type="submit" class="btn btn-primary">
+                                <span>Create Workout</span>
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Exercise Modal -->
+    <div class="modal hidden" id="createExerciseModal">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create New Exercise</h2>
+                <button class="modal-close" id="closeExerciseModal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="exerciseForm">
+                <div class="form-group">
+                    <label for="exerciseName">Exercise Name</label>
+                    <input type="text" id="exerciseName" name="name" required placeholder="e.g., Bench Press">
+                </div>
+                
+                <div class="form-group">
+                    <label for="exerciseMuscleGroup">Muscle Group</label>
+                    <select id="exerciseMuscleGroup" name="muscle_group" required>
+                        <option value="">Select muscle group</option>
+                        <option value="Chest">Chest</option>
+                        <option value="Back">Back</option>
+                        <option value="Shoulders">Shoulders</option>
+                        <option value="Arms">Arms</option>
+                        <option value="Legs">Legs</option>
+                        <option value="Core">Core</option>
+                        <option value="Full Body">Full Body</option>
+                    </select>
+                </div>
+                
+                <div id="exerciseFormError" class="error-message"></div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelExerciseBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>Create Exercise</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="background-graphics">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

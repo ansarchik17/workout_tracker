@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Tracker - Train Smarter</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="landing-page">
+    <div class="landing-container">
+        <div class="landing-hero">
+            <div class="logo-section">
+                <div class="logo">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="20" y="35" width="15" height="50" rx="3" fill="currentColor"/>
+                        <rect x="65" y="35" width="15" height="50" rx="3" fill="currentColor"/>
+                        <rect x="35" y="45" width="30" height="8" rx="2" fill="currentColor"/>
+                    </svg>
+                </div>
+                <h1 class="app-title">WORKOUT<br>TRACKER</h1>
+            </div>
+            
+            <p class="tagline">Transform your training with precision tracking and powerful insights</p>
+            
+            <div class="stats-preview">
+                <div class="stat-item">
+                    <span class="stat-number">1000+</span>
+                    <span class="stat-label">Workouts Logged</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">500+</span>
+                    <span class="stat-label">Active Users</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Exercises</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-panel" id="authPanel">
+            <!-- Sign In Form -->
+            <div class="auth-form" id="signInForm">
+                <h2 class="form-title">Welcome Back</h2>
+                <p class="form-subtitle">Sign in to continue your fitness journey</p>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" name="email" required placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" name="password" required placeholder="••••••••">
+                    </div>
+                    
+                    <div id="loginError" class="error-message"></div>
+                    
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span>Sign In</span>
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </form>
+                
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#" id="showSignUpBtn">Sign up</a></p>
+                </div>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div class="auth-form hidden" id="signUpForm">
+                <h2 class="form-title">Start Your Journey</h2>
+                <p class="form-subtitle">Create an account to track your progress</p>
+                
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName">Full Name</label>
+                        <input type="text" id="registerName" name="name" required placeholder="John Doe">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" name="email" required placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" name="password" required placeholder="••••••••">
+                    </div>
+                    
+                    <div id="registerError" class="error-message"></div>
+                    
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span>Create Account</span>
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </form>
+                
+                <div class="form-footer">
+                    <p>Already have an account? <a href="#" id="showSignInBtn">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="background-graphics">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/auth.js"></script>
+</body>
+</html>
