@@ -24,7 +24,7 @@ func NewAuthHandler(authRepo *repositories.AuthRepository) *AuthHandler {
 func (handler *AuthHandler) SignUp(c *gin.Context) {
 	var request models.RegisterUserRequest
 
-	err := c.BindJSON(&request)
+	err := c.ShouldBind(&request)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.NewApiError("could not bind json body"))
 		return
@@ -54,33 +54,43 @@ func (handler *AuthHandler) SignUp(c *gin.Context) {
 
 func (handler *AuthHandler) SignIn(c *gin.Context) {
 	var request models.SignInRequest
-	err := c.BindJSON(&request)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, models.NewApiError("Invalid parameters"))
-		return
-	}
-	user, err := handler.authRepo.FindByEmail(c, request.Email)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.NewApiError("Can not find by email"))
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, models.NewApiError("invalid request body"))
 		return
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(request.Password))
+	user, err := handler.authRepo.FindByEmail(
+		c.Request.Context(),
+		request.Email,
+	)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, models.NewApiError("Invalid credials"))
+		c.JSON(http.StatusUnauthorized, models.NewApiError("invalid credentials"))
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword(
+		[]byte(user.PasswordHash),
+		[]byte(request.Password),
+	); err != nil {
+		c.JSON(http.StatusUnauthorized, models.NewApiError("invalid credentials"))
 		return
 	}
 
 	claims := jwt.RegisteredClaims{
-		Subject:   strconv.Itoa(user.ID),
+		Subject:   strconv.Itoa(user.UserID),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(config.Config.JwtExpiresIn)),
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(config.Config.JwtSecretKey))
+	token, err := jwt.NewWithClaims(
+		jwt.SigningMethodHS256,
+		claims,
+	).SignedString([]byte(config.Config.JwtSecretKey))
+
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.NewApiError("could not sign JWT"))
+		c.JSON(http.StatusInternalServerError, models.NewApiError("could not sign token"))
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
