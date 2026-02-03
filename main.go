@@ -4,6 +4,7 @@ import (
 	"context"
 	"workout-tracker/config"
 	"workout-tracker/handlers"
+	"workout-tracker/middleware"
 	"workout-tracker/repositories"
 
 	"github.com/gin-contrib/cors"
@@ -14,6 +15,8 @@ import (
 
 func main() {
 	r := gin.Default()
+	r.LoadHTMLGlob("templates/*")
+	r.Static("/static", "./static")
 	corsConfig := cors.Config{
 		AllowAllOrigins: true,
 		AllowHeaders:    []string{"*"},
@@ -28,9 +31,33 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	workOutRepository := repositories.NewAuthRepositories(connection)
-	workOutHandler := handlers.NewAuthHandler(workOutRepository)
-	r.POST("/workout/signUp", workOutHandler.SignUp)
+	authRepository := repositories.NewAuthRepository(connection)
+	exerciseRepository := repositories.NewExerciseRepository(connection)
+	workoutRepository := repositories.NewWorkoutRepository(connection)
+	authHandler := handlers.NewAuthHandler(authRepository)
+	exerciseHandler := handlers.NewExerciseHandler(exerciseRepository)
+	workoutHandler := handlers.NewWorkoutHandler(workoutRepository)
+
+	r.GET("/", func(c *gin.Context) {
+		c.HTML(200, "index.html", nil)
+	})
+
+	r.GET("/dashboard", func(c *gin.Context) {
+		c.HTML(200, "dashboard.html", nil)
+	})
+
+	//users handlers
+	r.POST("/user/signUp", authHandler.SignUp)
+	r.POST("/user/signIn", authHandler.SignIn)
+	//workout handlers
+	auth := r.Group("/")
+	auth.Use(middleware.AuthMiddleware())
+	{
+		auth.POST("/exercise", exerciseHandler.CreateExercise)
+		auth.POST("/workout", workoutHandler.CreateWorkout)
+		auth.GET("/user/workout", workoutHandler.GetMyWorkouts)
+		auth.GET("/user/exercises", workoutHandler.GetMyExercises)
+	}
 	r.Run(config.Config.AppHost)
 }
 
